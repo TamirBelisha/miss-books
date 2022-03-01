@@ -1,4 +1,5 @@
 import { storageService } from "./async-storage-service.js";
+import { utilService } from "./util-service.js";
 import bookList from "./book-list.js";
 
 const BOOKS_KEY = "missBooksDB";
@@ -11,6 +12,8 @@ export const bookService = {
   save,
   addReview,
   removeReview,
+  getBooksFromGoogle,
+  addBookFromGoogle
 };
 
 function query() {
@@ -52,16 +55,33 @@ function createBooks() {
   });
 }
 
-// function addReview(bookId, review) {
-//     var booksFromStorage
-//     // const review = Object.assign({}, review);
-//     query().then(books => booksFromStorage = books).then(
-//         get(bookId).then(book => {
-//             if (book.reviews) book.reviews.push(review)
-//             else book.reviews = [review]
-//             var idx = booksFromStorage.findIndex(b => b.id === bookId)
-//             booksFromStorage[idx] = book
-//             storageService.saveToStorage(BOOKS_KEY, booksFromStorage)
-//         })
-//     )
-// }
+function getBooksFromGoogle(bookName) {
+  console.log('bookName',bookName);
+  const url = `https://www.googleapis.com/books/v1/volumes?printType=books&q=${bookName}`
+  return getFromAPI(url)
+}
+
+function getFromAPI(url) {
+  return axios.get(url)
+  .then(res => res.data.items)
+  .then(items => {
+    console.log('items',items)
+    return items
+})
+}
+
+function addBookFromGoogle(book) {
+  var newBook = {
+    title: book.title,
+    subtitle: book.subtitle,
+    authors: [...book.authors],
+    categories: [...book.categories],
+    publishedDate: book.publishedDate,
+    language: book.language,
+    description: utilService.makeLorem(utilService.getRandomIntInclusive(10, 40)),
+    pageCount: 240,
+    thumbnail: book.imageLinks.thumbnail,
+    listPrice: {amount: utilService.getRandomIntInclusive(20, 240), currencyCode: "USD", isOnSale: false}
+}
+  storageService.post(BOOKS_KEY, newBook)
+}

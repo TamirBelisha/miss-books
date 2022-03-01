@@ -61,7 +61,7 @@ export default {
                     readedAt: '2022-02-22',
                     txt: ''
                 }
-                eventBus.emit('show-msg', {txt: 'Review Added.', type: 'success'})
+                eventBus.emit('show-msg', {txt: 'Review Added!', type: 'success'})
             })
         },
         displayStars(starCount) {

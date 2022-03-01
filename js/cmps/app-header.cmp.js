@@ -10,6 +10,5 @@ export default {
                 <router-link to="/about">About</router-link>
             </nav>
         </header>
-    
-    `
+    `,
 }
