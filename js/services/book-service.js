@@ -51,7 +51,7 @@ function removeReview(book, reviewId) {
 function createBooks() {
   const books = storageService.query(BOOKS_KEY).then((books) => {
     if (!books || !books.length)
-      storageService.saveToStorage(BOOKS_KEY, bookList);
+      storageService.postMany(BOOKS_KEY, bookList);
   });
 }
 
